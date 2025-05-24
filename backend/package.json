@@ -1,0 +1,28 @@
+{
+  "name": "finance-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./build/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aiden8641/Finance-Tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aiden8641/Finance-Tracker/issues"
+  },
+  "homepage": "https://github.com/Aiden8641/Finance-Tracker#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3"
+  }
+}
