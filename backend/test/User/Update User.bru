@@ -1,0 +1,28 @@
+meta {
+  name: Update User
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userUpdate": {
+      "id": 1,
+      "username": "your_username",
+      "non_liquid_assets": "20000",
+      "liquid_assets": "5000",
+      "savings": "5000",
+      "checking": "1500",
+      "debt": "1000",
+      "monthly_income": "4000",
+      "other_income": "500",
+      "bonuses": "200"
+    }
+  }
+}

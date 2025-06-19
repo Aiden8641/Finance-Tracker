@@ -1,0 +1,27 @@
+meta {
+  name: Saving Funds
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/budgets/savingFunds
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "savingFundsUpdate": {
+      
+      interface savingFundsRatio {
+    id: number;
+    budget_id: number;
+    emergency_fund_ratio: number;
+    vacation_fund_ratio: number;
+    gifts_fund_ratio: number;
+  }
+  
+    }
+  }
+}
