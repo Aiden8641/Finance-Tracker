@@ -1,119 +1,100 @@
 import { sql } from "./db";
 
-export async function createUserTable(): Promise<void> {
+export async function users(): Promise<void> {
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
+      email TEXT NOT NULL, 
       username TEXT NOT NULL,
       hashed_password TEXT NOT NULL,
-      non_liquid_assets NUMERIC DEFAULT 0,
-      liquid_assets NUMERIC DEFAULT 0,
-      savings NUMERIC DEFAULT 0,
-      checking NUMERIC DEFAULT 0,
-      debt NUMERIC DEFAULT 0,
-      monthly_income NUMERIC DEFAULT 0,
-      other_income NUMERIC DEFAULT 0,
-      bonuses NUMERIC DEFAULT 0,
-      available_income NUMERIC DEFAULT 0
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `;
 }
 
-// export async function createHashedPasswordTable(): Promise<void> {
-//   await sql`
-//     CREATE TABLE IF NOT EXISTS hashed_password (
-//       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-//       user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-//     )
-//   `;
-// }
-
-export async function createBudgetAllocationTable(): Promise<void> {
+export async function financial_profiles() {
   await sql`
-    CREATE TABLE IF NOT EXISTS budgetAllocation (  
+    CREATE TABLE IF NOT EXISTS financial_profiles (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-      savings_ratio NUMERIC NOT NULL DEFAULT 0.40,
-      investments_ratio NUMERIC NOT NULL DEFAULT 0.40,
-      guilt_free_spending_ratio NUMERIC NOT NULL DEFAULT 0.20,
-      CHECK (savings_ratio + investments_ratio + guilt_free_spending_ratio <= 1)
+      income INTEGER NOT NULL, 
+      dividends_and_other_income INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-`;
-}
-export async function createLivingCostsTable(): Promise<void> {
-  await sql`
-  CREATE TABLE IF NOT EXISTS livingCosts (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    budget_id INTEGER UNIQUE REFERENCES budgetAllocation (id) ON DELETE CASCADE, 
-    rent NUMERIC DEFAULT 0,
-    bills NUMERIC DEFAULT 0,
-    insurance NUMERIC DEFAULT 0, 
-    transportation NUMERIC DEFAULT 0, 
-    debt_payments NUMERIC DEFAULT 0, 
-    groceries NUMERIC DEFAULT 0,
-    buffer_percent NUMERIC DEFAULT 0.05,
-    buffer_amount NUMERIC GENERATED ALWAYS AS (
-      ROUND(
-        (rent + bills + insurance + transportation + debt_payments + groceries) * buffer_percent,
-        2
-      )
-    ) STORED
-  )
-`;
+  `;
 }
 
-export async function createSavingFunds(): Promise<void> {
+export async function monthly_bonuses() {
   await sql`
-    CREATE TABLE IF NOT EXISTS savingFunds (
+    CREATE TABLE IF NOT EXISTS monthly_bonuses (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      budget_id INTEGER UNIQUE REFERENCES budgetAllocation (id) ON DELETE CASCADE, 
-      saving_funds_amount NUMERIC DEFAULT 0, 
-      emergency_fund_ratio NUMERIC NOT NULL DEFAULT 0.50, 
-      vacation_fund_ratio NUMERIC NOT NULL DEFAULT 0.30,
-      gifts_fund_ratio NUMERIC NOT NULL DEFAULT 0.20, 
-      emergency_funds NUMERIC DEFAULT 0,
-      vacation_funds NUMERIC DEFAULT 0,
-      gifts_funds NUMERIC DEFAULT 0,
-      CHECK (emergency_fund_ratio + vacation_fund_ratio + gifts_fund_ratio <= 1)
+      user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+      description TEXT, 
+      expense_amount INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-`;
+  `;
 }
 
-export async function createInvestmentsTable(): Promise<void> {
+export async function budget_monthly_snapshots() {
   await sql`
-    CREATE TABLE IF NOT EXISTS investments (
+    CREATE TABLE IF NOT EXISTS budget_monthly_snapshots (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      budget_id INTEGER UNIQUE REFERENCES budgetAllocation (id) ON DELETE CASCADE, 
-      investments_amount NUMERIC DEFAULT 0,
-      retirement_savings_ratio NUMERIC NOT NULL DEFAULT 0.30,
-      stocks_ratio NUMERIC NOT NULL DEFAULT 0.50,
-      bonds_ratio NUMERIC NOT NULL DEFAULT 0.20,
-      retirement_savings NUMERIC DEFAULT 0,
-      stocks NUMERIC DEFAULT 0,
-      bonds NUMERIC DEFAULT 0,
-      CHECK (retirement_savings_ratio + stocks_ratio + bonds_ratio <= 1)
+      user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+      income INTEGER NOT NULL, 
+      total_expenses INTEGER NOT NULL,
+      percent_needs INTEGER NOT NULL, 
+      percent_wants INTEGER NOT NULL, 
+      percent_savings INTEGER NOT NULL, 
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+}
+
+export async function budget_allocations(): Promise<void> {
+  await sql`
+    CREATE TABLE IF NOT EXISTS budget_allocations (  
+      id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+      percent_needs INTEGER NOT NULL DEFAULT 50, 
+      percent_wants INTEGER NOT NULL DEFAULT 30, 
+      percent_savings INTEGER NOT NULL DEFAULT 20, 
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      CHECK (percent_needs + percent_wants + percent_savings <= 100)
     )
 `;
 }
 
-export async function createGuiltFreeSpendingTable(): Promise<void> {
-  await sql` 
-    CREATE TABLE IF NOT EXISTS guiltFreeSpendings (
+export async function expenses(): Promise<void> {
+  await sql`
+    CREATE TABLE IF NOT EXISTS expenses (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      budget_id INTEGER UNIQUE REFERENCES budgetAllocation (id) ON DELETE CASCADE, 
-      available_guilt_free_spending NUMERIC DEFAULT 0
+      user_id INTEGER UNIQUE REFERENCES users (id) ON DELETE CASCADE,
+      category_id INTEGER REFERENCES categories (id),
+      description TEXT NOT NULL,
+      expense_amount NUMERIC NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `;
 }
 
-export async function createExpensesTable(): Promise<void> {
+export async function goals() {
   await sql`
-    CREATE TABLE IF NOT EXISTS otherExpenses (
+    CREATE TABLE IF NOT EXISTS goals (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      budget_id INTEGER UNIQUE REFERENCES budgetAllocation (id) ON DELETE CASCADE,
-      category TEXT NOT NULL,
-      label TEXT NOT NULL,
-      expense_amount NUMERIC NOT NULL
+      user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-`;
+  `;
+}
+
+export async function categories() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS categories (
+      id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      category_name TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
 }

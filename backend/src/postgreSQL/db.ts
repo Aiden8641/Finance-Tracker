@@ -1,13 +1,14 @@
 import postgres from "postgres";
 import { configDotenv } from "dotenv";
 import {
-  createUserTable,
-  createBudgetAllocationTable,
-  createLivingCostsTable,
-  createSavingFunds,
-  createInvestmentsTable,
-  createGuiltFreeSpendingTable,
-  createExpensesTable,
+  users,
+  financial_profiles,
+  monthly_bonuses,
+  expenses,
+  categories,
+  budget_allocations,
+  budget_monthly_snapshots,
+  goals,
 } from "./tables";
 import { types } from "pg";
 
@@ -40,17 +41,28 @@ export async function checkDBConnection(): Promise<void> {
 
 export async function setupDB(): Promise<void> {
   try {
-    await createUserTable();
-    await createBudgetAllocationTable();
-    await createLivingCostsTable();
-    await createSavingFunds();
-    await createInvestmentsTable();
-    await createGuiltFreeSpendingTable();
-    await createExpensesTable();
+    await users();
+    await financial_profiles();
+    await monthly_bonuses();
+    await categories();
+    await expenses();
+    await budget_allocations();
+    await budget_monthly_snapshots();
+    await goals();
 
-    // await updateBudgetSql();
-    // await updateBudgetOnUserChange();
+    console.log("DB Successfully created!");
   } catch (error) {
     console.log("Error creating tables", error);
   }
+}
+
+export async function dropTables(): Promise<void> {
+  await sql`DROP TABLE IF EXISTS financial_profiles`;
+  await sql`DROP TABLE IF EXISTS monthly_bonuses`;
+  await sql`DROP TABLE IF EXISTS expenses`;
+  await sql`DROP TABLE IF EXISTS categories`;
+  await sql`DROP TABLE IF EXISTS budget_allocations`;
+  await sql`DROP TABLE IF EXISTS budget_monthly_snapshots`;
+  await sql`DROP TABLE IF EXISTS goals`;
+  await sql`DROP TABLE IF EXISTS users`;
 }

@@ -7,13 +7,10 @@ import passport from "passport";
 import connectPgSimple from "connect-pg-simple";
 import { Pool } from "pg";
 import { configDotenv } from "dotenv";
-import { checkDBConnection, setupDB } from "./postgreSQL/db";
-import { dropTables } from "./postgreSQL/drops";
+import { checkDBConnection, setupDB, dropTables } from "./postgreSQL/db";
 
 //routes
 import auth from "./routes/auth";
-import budget from "./routes/budget";
-import user from "./routes/user";
 
 configDotenv();
 
@@ -75,8 +72,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.use(budget);
-app.use(user);
+// app.use(budget);
+// app.use(user);
 
 app.listen(port, async () => {
   console.log(`Listening on port ${port}`);

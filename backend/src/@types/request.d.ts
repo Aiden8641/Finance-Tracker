@@ -1,31 +1,21 @@
-import { Express, Request } from "express";
+import { Express } from "express";
 import {
-  user,
-  budgetAllocation,
+  budget_allocations,
   expenses,
-  livingCosts,
-  savingFunds,
-  investments,
-  guiltFreeSpending,
-  savingFundsRequest,
-  investmentsRequest,
-} from "./user";
+  financial_profiles,
+  goals,
+  monthly_bonuses,
+  users,
+} from "./types";
 
-interface financialBody {
-  userUpdate?: user;
-  budgetAllocationUpdate?: budgetAllocation;
-  livingCostsUpdate?: livingCosts;
-  savingFundsUpdate?: savingFundsRequest;
-  investmentsUpdate?: investmentsRequest;
-  guiltFreeSpendingUpdate?: guiltFreeSpending;
-  expenses?: expenses;
-}
-
-interface financialRequest extends Request {
-  body: financialBody;
-}
-
-interface newUserRequest extends Request {
-  username: string;
-  password: string;
+declare module "express" {
+  interface Request {
+    body:
+      | users
+      | financial_profiles
+      | monthly_bonuses
+      | expenses
+      | budget_allocations
+      | goals;
+  }
 }

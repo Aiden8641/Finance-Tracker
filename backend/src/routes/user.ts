@@ -2,13 +2,13 @@ import { Router } from "express";
 import { createUpdateHandler } from "../middleware/updateHandler";
 import { verifyUserPayload } from "../middleware/user";
 import { updateUser } from "../middleware/user";
-import { userResponse } from "../@types/user";
+import { usersResponse } from "../@types/types";
 
 const router = Router();
 
 router.get("/user", async (req, res, next) => {
   try {
-    const user = req.user as userResponse;
+    const user = req.user as usersResponse;
 
     res.json(user);
   } catch (error) {
@@ -21,5 +21,11 @@ router.put(
   verifyUserPayload,
   createUpdateHandler("userUpdate", updateUser),
 );
+
+router.get("/goals");
+router.get("/goals/:id");
+router.post("/goals");
+router.put("/goals");
+router.delete("/goals");
 
 export default router;

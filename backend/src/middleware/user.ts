@@ -1,30 +1,30 @@
 import { Request, Response, NextFunction } from "express";
 import { sql } from "../postgreSQL/db";
-import { user, userResponse, livingCostsResponse } from "../@types/user";
-import { financialRequest } from "../@types/request";
+import { users, usersResponse } from "../@types/types";
 
-export function sanitizeUser(user: userResponse) {
+export function sanitizeUser(user: usersResponse) {
   const { hashed_password, ...safeUser } = user;
 
   return safeUser;
 }
 
 export async function verifyUserPayload(
-  req: financialRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    if (!req.body.userUpdate) {
+    if (!req.body) {
       res.json({ message: "Payload to update user missing!" });
       return;
     }
 
-    const userId = req.body.userUpdate.id;
+    const body = req.body as users;
+    const user_id = body.id;
 
     const sessionUserId = req.user?.id;
 
-    if (userId !== sessionUserId) {
+    if (user_id !== sessionUserId) {
       res.status(403).json({ error: "Forbidden" });
       return;
     }
@@ -43,77 +43,17 @@ export async function verifyUserPayload(
 //   return user;
 // }
 
-export async function updateUser(user: user) {
-  const [updatedUser]: [userResponse] = await sql`
+export async function updateUser(user: users) {
+  const [updated_user]: [usersResponse] = await sql`
     UPDATE users
     SET
-      non_liquid_assets = ${user.non_liquid_assets},
-      liquid_assets = ${user.liquid_assets},
-      savings = ${user.savings},
-      checking = ${user.checking},
-      debt = ${user.debt},
-      monthly_income = ${user.monthly_income},
-      other_income = ${user.other_income},
-      bonuses = ${user.bonuses}
+      email = ${user.email},
+      username = ${user.username}
     WHERE id = ${user.id}
     RETURNING *;
   `;
 
-  const safeUser = sanitizeUser(updatedUser);
+  const safeUser = sanitizeUser(updated_user);
 
   return safeUser;
-}
-
-export async function getAvailableIncomeByUserId(userId: string) {
-  const [availableIncome]: [{ available_income: string }] = await sql`
-    SELECT available_income FROM users 
-    WHERE id = ${userId};
-  `;
-
-  return availableIncome;
-}
-
-export async function updateAvailableIncomeByUserId(userId: string) {
-  const [getLivingCosts] = await sql`
-    SELECT * from lilvingCosts 
-  `;
-
-  const keys: (keyof livingCostsResponse)[] = [
-    "rent",
-    "bills",
-    "insurance",
-    "transportation",
-    "debt_payments",
-    "groceries",
-    "buffer_amount",
-  ];
-
-  const totalLivingCosts = keys.reduce(
-    (sum, key) => sum + parseInt(getLivingCosts[key] as string),
-    0,
-  );
-
-  const [user]: [userResponse] = await sql`
-    SELECT monthly_income, other_income, bonuses from users
-    WHERE id = ${userId};
-  `;
-  //TODO: fix this
-  //
-  // const totalIncome =
-  //   parseInt(user.monthly_income) +
-  //   parseInt(user.other_income) +
-  //   parseInt(user.bonuses);
-
-  // const [updateAvailableIncome]: [user] = await sql`
-  //   UPDATE users
-  //   SET
-  //     available_income = ${totalIncome - totalLivingCosts}
-  //   WHERE id = ${userId}
-  //   RETURNING *;
-  // `;
-  // console.log({
-  //   user: updateAvailableIncome,
-  // });
-
-  return { user: null };
 }

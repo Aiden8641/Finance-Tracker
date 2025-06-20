@@ -1,18 +1,11 @@
-export enum requestTypes {
+export enum Tables {
   User = "userUpdate",
-  BudgetAllocation = "budgetAllocationUpdate",
-  LivingCosts = "livingCostsUpdate",
-  SavingsFunds = "savingFundsUpdate",
-  Investments = "investmentsUpdate",
-  GuiltFreeSpendings = "guiltFreeSpendingUpdate",
+  Budget_allocations = "budget_allocation",
   Expenses = "expenses",
 }
 
 export enum Categories {
-  BudgetAllocation = "budgetAllocation",
-  LivingCosts = "livingCosts",
-  SavingsFunds = "savingFunds",
-  Investments = "investments",
-  GuiltFreeSpendings = "guiltFreeSpendings",
-  Expenses = "otherExpenses",
+  needs = 1,
+  wants,
+  savings,
 }
