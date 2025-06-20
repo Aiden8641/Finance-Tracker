@@ -1,14 +1,13 @@
-import { Router } from "express";
-import { createUpdateHandler } from "../middleware/updateHandler";
-import { verifyUserPayload } from "../middleware/user";
+import { NextFunction, Request, Response, Router } from "express";
+import { users } from "../@types/types";
 import { updateUser } from "../middleware/user";
-import { usersResponse } from "../@types/types";
+import { verify_user } from "../middleware/validations/verifyBudgetOwnership";
 
 const router = Router();
 
 router.get("/user", async (req, res, next) => {
   try {
-    const user = req.user as usersResponse;
+    const user = req.user as users;
 
     res.json(user);
   } catch (error) {
@@ -18,8 +17,16 @@ router.get("/user", async (req, res, next) => {
 
 router.put(
   "/user",
-  verifyUserPayload,
-  createUpdateHandler("userUpdate", updateUser),
+  verify_user,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const payload = req.body as users;
+
+    const updated_user = await updateUser(payload);
+
+    res
+      .status(200)
+      .json({ message: "Successfully updated user!", user_data: updated_user });
+  },
 );
 
 router.get("/goals");

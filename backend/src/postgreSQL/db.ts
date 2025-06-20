@@ -50,6 +50,13 @@ export async function setupDB(): Promise<void> {
     await budget_monthly_snapshots();
     await goals();
 
+    // seed categories table
+    const categories_to_add = ["needs", "wants", "saving"];
+
+    for (let i = 0; i < categories_to_add.length; i++) {
+      await sql`INSERT INTO categories (category_name) VALUES (${categories_to_add[i]})`;
+    }
+
     console.log("DB Successfully created!");
   } catch (error) {
     console.log("Error creating tables", error);

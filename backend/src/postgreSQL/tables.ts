@@ -17,8 +17,8 @@ export async function financial_profiles() {
     CREATE TABLE IF NOT EXISTS financial_profiles (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
       user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
-      income INTEGER NOT NULL, 
-      dividends_and_other_income INTEGER NOT NULL,
+      income INTEGER NOT NULL DEFAULT 0, 
+      dividends_and_other_income INTEGER NOT NULL DEFAULT 0,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;

@@ -1,68 +1,55 @@
-import { NextFunction, Response } from "express";
-import { financialRequest } from "../../@types/request";
-import { Categories, requestTypes } from "../../enums/enums";
-import { sql } from "../../postgreSQL/db";
-import { getBudgetAllocationByUserId } from "../budget/budgetAllocation";
+import { Request, NextFunction, Response } from "express";
+import {
+  financial_profiles,
+  monthly_bonuses,
+  expenses,
+  budget_allocations,
+  goals,
+  users,
+} from "../../@types/types";
 
-export async function isOwnedByUser(
-  user: Express.User,
-  itemId: number,
-  category:
-    | Categories.LivingCosts
-    | Categories.SavingsFunds
-    | Categories.Investments
-    | Categories.GuiltFreeSpendings
-    | Categories.Expenses,
-) {
-  const userId = user.id;
+export function verify_user(req: Request, res: Response, next: NextFunction) {
+  try {
+    const payload = req.body as users;
 
-  const { id: budget_id } = await getBudgetAllocationByUserId(userId);
+    if (payload.id != req.user?.id) {
+      res.status(403).json({
+        message: "User is not authorized to access this resource!",
+      });
+      return;
+    }
+    return next();
+  } catch (error) {
+    console.error(error);
 
-  console.log(category);
-  console.log(itemId);
-  console.log(budget_id);
-
-  const [isOwnedByUser] = await sql`
-      SELECT * FROM ${sql(category.toLocaleLowerCase())} 
-      WHERE id = ${itemId} and budget_id = ${budget_id};
-  `;
-
-  if (!isOwnedByUser) {
-    return false;
+    return next({ status: 500, error: "Error while verify payload!" });
   }
-
-  return true;
 }
 
-export function createOwnershipVerification(
-  key: requestTypes,
-  category:
-    | Categories.LivingCosts
-    | Categories.SavingsFunds
-    | Categories.Investments
-    | Categories.GuiltFreeSpendings
-    | Categories.Expenses,
+export function is_authorized_user(
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) {
-  return async (req: financialRequest, res: Response, next: NextFunction) => {
-    try {
-      if (!req.body[key]) {
-        return next(new Error("update body missing!"));
-      }
-      const itemId = req.body[key].id;
+  try {
+    const payload = req.body as
+      | financial_profiles
+      | monthly_bonuses
+      | expenses
+      | budget_allocations
+      | goals;
 
-      const isOwned = await isOwnedByUser(
-        req.user as Express.User,
-        itemId,
-        category,
-      );
-      if (!isOwned) {
-        res.json("User not authorized to access item!");
-        return;
-      }
-
-      return next();
-    } catch (error) {
-      return next(error);
+    if (payload.user_id != req.user?.id) {
+      res.status(403).json({
+        message: "User is not authorized to access this resource!",
+      });
+      return;
     }
-  };
+
+    return next();
+  } catch (error) {
+    console.error(error);
+
+    return next({ status: 500, error: "Error while verify payload!" });
+  }
 }

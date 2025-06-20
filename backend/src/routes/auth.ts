@@ -86,7 +86,11 @@ router.post("/logout", (req, res, next) => {
 
 router.post("/signUp", (req, res, next) => {
   try {
-    const user = req.body as { username: string; password: string };
+    const user = req.body as {
+      email: string;
+      username: string;
+      password: string;
+    };
     const saltOrRounds = 10;
 
     bcrypt.hash(user.password, saltOrRounds, async function (err, hash) {
@@ -99,8 +103,8 @@ router.post("/signUp", (req, res, next) => {
       try {
         await sql.begin(async (sql) => {
           const [{ id: user_id }] =
-            await sql`INSERT INTO users (username, hashed_password) 
-              VALUES (${user.username}, ${hash}) RETURNING id
+            await sql`INSERT INTO users (email, username, hashed_password) 
+              VALUES (${user.email},${user.username}, ${hash}) RETURNING id
             `;
 
           await sql`INSERT INTO budget_allocations (user_id) VALUES (${user_id})`;

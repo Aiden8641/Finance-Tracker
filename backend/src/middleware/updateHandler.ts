@@ -1,4 +1,3 @@
-import { financialRequest } from "../@types/request";
 import { Row } from "postgres";
 
 export function createUpdateHandler<T>(

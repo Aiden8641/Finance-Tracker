@@ -58,8 +58,6 @@ app.use(passport.session());
 
 app.use(auth);
 
-// app.use(passport.authenticate("session"));
-
 app.use((req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.isAuthenticated()) {
