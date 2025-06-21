@@ -80,3 +80,9 @@ interface categories {
   id: number;
   category_name: string;
 }
+
+interface custom_error {
+  status: number;
+  error: string;
+  clear_cookie: boolean;
+}

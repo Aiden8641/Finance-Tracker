@@ -1,0 +1,19 @@
+meta {
+  name: update_user
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 2,
+    "email": "new_email@email.com",
+    "username": "your_username"
+  }
+}

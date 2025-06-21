@@ -1,0 +1,18 @@
+meta {
+  name: insert_goals
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/goals
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "user_id": 3,
+    "description": "Saving $300023"
+  }
+}

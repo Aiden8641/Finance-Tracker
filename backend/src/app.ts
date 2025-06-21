@@ -11,6 +11,9 @@ import { checkDBConnection, setupDB, dropTables } from "./postgreSQL/db";
 
 //routes
 import auth from "./routes/auth";
+import users from "./routes/user";
+import goals from "./routes/goals";
+import { custom_error } from "./@types/types";
 
 configDotenv();
 
@@ -70,8 +73,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// app.use(budget);
-// app.use(user);
+app.use(users);
+app.use(goals);
+
+//error handler probably not needed but keeps messages short and concise
+app.use(
+  (err: custom_error, req: Request, res: Response, next: NextFunction) => {
+    if (err.clear_cookie) {
+      res.clearCookie("connect.sid").status(err.status).json(err.error);
+    } else {
+      res.status(err.status).json(err.error);
+    }
+
+    return;
+  },
+);
 
 app.listen(port, async () => {
   console.log(`Listening on port ${port}`);

@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { NextFunction, Router } from "express";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import bcrypt from "bcrypt";
 import { sql } from "../postgreSQL/db";
-import { sanitizeUser } from "../middleware/user";
-import { usersResponse } from "../@types/types";
+import { get_user_by_username, sanitizeUser } from "../middleware/user";
+import { custom_error, users, usersResponse } from "../@types/types";
 
 const router = Router();
 
@@ -28,7 +28,8 @@ passport.use(
         return cb(null, false, { message: "Incorrect username or password" });
       }
 
-      return cb(null, user);
+      const safe_user = sanitizeUser(user);
+      return cb(null, safe_user);
     } catch (error) {
       return cb(error);
     }
@@ -36,17 +37,29 @@ passport.use(
 );
 
 passport.serializeUser(async function (user, cb) {
+  // do not include and sensitive info here
   process.nextTick(() => {
     cb(null, { id: user.id });
   });
 });
-
-passport.deserializeUser(async function (serializeUser: { id: number }, cb) {
+passport.deserializeUser(async function (
+  serializeUser: { id: number },
+  cb: (err: custom_error | null, user?: Express.User | false | null) => void,
+) {
+  console.log(serializeUser);
   const [user]: [usersResponse] =
     await sql`SELECT * FROM users WHERE id = ${serializeUser.id}`;
-  const { hashed_password, ...safeUser } = user;
 
-  return cb(null, safeUser);
+  if (!user) {
+    return cb(
+      { status: 401, error: "User not found!", clear_cookie: true },
+      null,
+    );
+  }
+  // make sure password hash is not here for safety
+  const safe_user = sanitizeUser(user);
+
+  return cb(null, safe_user);
 });
 
 //TODO: figure logic for redirecting when using with react
@@ -58,14 +71,23 @@ router.post(
   passport.authenticate("local"),
   async (req, res, next) => {
     try {
-      // console.log(req.session);
-      // console.log(req.session.passport.user.id);
+      // users
       const user = req.user as usersResponse;
+      const user_id = user.id;
 
-      const safeUser = sanitizeUser(user);
+      //TODO: data that is needed:
+      // Financial_profiles
+      // budget_allocations
+      // expenses
+      // goals
+      // const budget_allocations =
+      //   await get_budget_allocation_by_user_id(user_id);
+      // monthly bonuses
 
       res.status(200).json({
-        user_data: safeUser,
+        data: {
+          user: user,
+        },
         message: "Successfully logged in!",
       });
     } catch (error) {
@@ -77,20 +99,33 @@ router.post(
 router.post("/logout", (req, res, next) => {
   req.logOut((err) => {
     if (err) {
-      return next(err);
+      return next({ status: 500, error: err });
     }
     // res.redirect("/");
-    res.status(200).json({ message: "Successfully logged out!" });
+    res
+      .clearCookie("connect.sid")
+      .status(200)
+      .json({ message: "Successfully logged out!" });
   });
 });
 
-router.post("/signUp", (req, res, next) => {
+router.post("/signUp", async (req, res, next) => {
   try {
     const user = req.body as {
       email: string;
       username: string;
       password: string;
     };
+
+    const is_identical_username = await get_user_by_username(user.username);
+
+    if (is_identical_username) {
+      res.status(409).json({
+        message: "Username already taken, please choose a different username!",
+      });
+      return;
+    }
+
     const saltOrRounds = 10;
 
     bcrypt.hash(user.password, saltOrRounds, async function (err, hash) {
@@ -101,16 +136,31 @@ router.post("/signUp", (req, res, next) => {
         });
       }
       try {
-        await sql.begin(async (sql) => {
-          const [{ id: user_id }] =
+        const added_user = await sql.begin(async (sql) => {
+          const [new_user]: [users] =
             await sql`INSERT INTO users (email, username, hashed_password) 
-              VALUES (${user.email},${user.username}, ${hash}) RETURNING id
+              VALUES (${user.email},${user.username}, ${hash}) RETURNING *; 
             `;
+
+          const user_id = new_user.id;
 
           await sql`INSERT INTO budget_allocations (user_id) VALUES (${user_id})`;
           await sql`INSERT INTO Financial_profiles (user_id) VALUES (${user_id})`;
+
+          return new_user;
         });
-        res.status(201).json("Successfully Signed Up!");
+
+        req.login(added_user, function (err) {
+          if (err) {
+            return next({
+              status: 500,
+              error:
+                "Error logging in user after creation. Please try manually logging in!",
+              message: err,
+            });
+          }
+          res.status(201).json("Successfully Signed Up and Logged in!");
+        });
       } catch (error) {
         console.log(error);
 

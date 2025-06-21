@@ -8,6 +8,14 @@ export function sanitizeUser(user: usersResponse) {
   return safeUser;
 }
 
+export async function get_user_by_username(username: string) {
+  const [user]: [users] = await sql`
+    SELECT * FROM users
+    WHERE username = ${username};
+  `;
+
+  return user;
+}
 // Unescessary as passport deserializes user, pretty much the same as below.
 // Uncomment if this is needed later
 // export async function getUserById(id: string) {
