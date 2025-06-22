@@ -31,6 +31,7 @@ router.get(
     }
   },
 );
+
 router.get(
   "/monthly_bonuses/:id",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -64,6 +65,7 @@ router.get(
     }
   },
 );
+
 router.post(
   "/monthly_bonuses",
   is_authorized_user_by_payload(),
@@ -87,6 +89,7 @@ router.post(
     }
   },
 );
+
 router.put(
   "/monthly_bonuses",
   async (req: Request, res: Response, next: NextFunction) => {
