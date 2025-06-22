@@ -3,7 +3,7 @@ import { sql } from "../postgreSQL/db";
 
 export async function get_all_expenses_by_user_id(user: users) {
   const user_id = user.id;
-  const expenses: expenses[] = await sql`
+  const expenses: [expenses] = await sql`
     SELECT * FROM otherExpenses 
     WHERE user_id = ${user_id};
   `;

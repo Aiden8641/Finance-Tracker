@@ -41,7 +41,7 @@ interface monthly_bonuses {
   id: number;
   user_id: number;
   description: string;
-  amount: number;
+  expense_amount: number;
 }
 
 interface budget_allocations {

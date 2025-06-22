@@ -1,28 +1,15 @@
-// TODO: setup routes
-import { Request, NextFunction, Router, Response } from "express";
+import { Request, Response, NextFunction, Router } from "express";
 import {
-  delete_expenses,
   get_all_expenses_by_user_id,
   get_expense_by_id,
   insert_expenses,
   update_expenses,
+  delete_expenses,
 } from "../middleware/expenses";
 import { is_authorized_user_by_payload } from "../middleware/verification";
 import { expenses } from "../@types/types";
 
 const router = Router();
-
-router.get("/financial_profile");
-router.put("/financial_profile");
-
-router.get("/monthly_bonuses");
-router.get("/monthly_bonuses/:id");
-router.post("/monthly_bonuses");
-router.put("/monthly_bonuses");
-router.delete("/monthly_bonuses");
-
-router.get("/budget_allocation");
-router.put("/budget_allocation");
 
 router.get(
   "/expenses",
@@ -127,7 +114,7 @@ router.delete("/expenses/:id", async (req, res, next) => {
 
     const expenses = await delete_expenses(user as Express.User, expense_id);
 
-    if ((expenses.length = 0)) {
+    if ((expenses.count = 0)) {
       res.status(404).json({
         message:
           "Expense not deleted. No expense with that id for current user",

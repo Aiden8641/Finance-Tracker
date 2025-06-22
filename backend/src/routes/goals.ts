@@ -7,7 +7,7 @@ import {
   update_goals,
   delete_goals,
 } from "../middleware/goals";
-import { is_authorized_user_by_payload } from "../middleware/validations/verification";
+import { is_authorized_user_by_payload } from "../middleware/verification";
 
 const router = Router();
 

@@ -13,6 +13,11 @@ import { checkDBConnection, setupDB, dropTables } from "./postgreSQL/db";
 import auth from "./routes/auth";
 import users from "./routes/user";
 import goals from "./routes/goals";
+import expenses from "./routes/expenses";
+import budget_allocation from "./routes/budget_allocation";
+import financial_profiles from "./routes/financial_profiles";
+import monthy_bonuses from "./routes/monthly_bonuses";
+
 import { custom_error } from "./@types/types";
 
 configDotenv();
@@ -75,6 +80,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use(users);
 app.use(goals);
+app.use(expenses);
+app.use(financial_profiles);
+app.use(budget_allocation);
+app.use(monthy_bonuses);
 
 //error handler probably not needed but keeps messages short and concise
 app.use(

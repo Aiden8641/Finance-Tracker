@@ -1,14 +1,14 @@
 import { Request, NextFunction, Response } from "express";
 import {
+  users,
   financial_profiles,
   monthly_bonuses,
   expenses,
   budget_allocations,
   goals,
-  users,
-} from "../../@types/types";
-import { Tables } from "../../enums/enums";
-import { sql } from "../../postgreSQL/db";
+} from "../@types/types";
+import { Tables } from "../enums/enums";
+import { sql } from "../postgreSQL/db";
 
 export function verify_user(req: Request, res: Response, next: NextFunction) {
   try {
@@ -61,27 +61,28 @@ export function is_authorized_user_by_payload() {
   };
 }
 
-export function is_authorized_user_by_params(table: Tables) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      let param_id = parseInt(req.params.id);
-
-      // can ignore tyescript warning of user being undefined as the routes require authentication to access meaning req.user will be populated
-      const is_authorized_user =
-        await sql`SELECT * FROM ${table} WHERE id = ${param_id} and user_id = ${req.user!.id} `;
-
-      if (!is_authorized_user) {
-        res.status(403).json({
-          message: "User is not authorized to access this resource!",
-        });
-        return;
-      }
-
-      return next();
-    } catch (error) {
-      console.error(error);
-
-      return next({ status: 500, error: "Error while verify payload!" });
-    }
-  };
-}
+// don't even think t his check is needed :p
+// export function is_authorized_user_by_params(table: Tables) {
+//   return async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       let param_id = parseInt(req.params.id);
+//
+//       // can ignore tyescript warning of user being undefined as the routes require authentication to access meaning req.user will be populated
+//       const is_authorized_user =
+//         await sql`SELECT * FROM ${table} WHERE id = ${param_id} and user_id = ${req.user!.id} `;
+//
+//       if (!is_authorized_user) {
+//         res.status(403).json({
+//           message: "User is not authorized to access this resource!",
+//         });
+//         return;
+//       }
+//
+//       return next();
+//     } catch (error) {
+//       console.error(error);
+//
+//       return next({ status: 500, error: "Error while verify payload!" });
+//     }
+//   };
+// }
