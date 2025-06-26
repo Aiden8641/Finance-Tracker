@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import AuthPage from "./pages/AuthPage"; // <-- Make sure this file exists
 import Profile from "./pages/Profile";
