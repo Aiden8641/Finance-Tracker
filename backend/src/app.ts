@@ -7,15 +7,15 @@ import passport from "passport";
 import connectPgSimple from "connect-pg-simple";
 import { Pool } from "pg";
 import { configDotenv } from "dotenv";
-import { checkDBConnection, setupDB, dropTables } from "../src/postgreSQL/db";
+import { checkDBConnection, setupDB, dropTables } from "./postgreSQL/db";
 
 //routes
-import auth from "../src/routes/auth";
-import users from "../src/routes/user";
-import goals from "../src/routes/goals";
-import expenses from "../src/routes/expenses";
-import budget_allocation from "../src/routes/budget_allocation";
-import financial_profiles from "../src/routes/financial_profiles";
+import auth from "./routes/auth";
+import users from "./routes/user";
+import goals from "./routes/goals";
+import expenses from "./routes/expenses";
+import budget_allocation from "./routes/budget_allocation";
+import financial_profiles from "./routes/financial_profiles";
 // import monthy_bonuses from "./routes/monthly_bonuses";
 // import monthy_snapshots from "./routes/monthy_snapshots";
 //
