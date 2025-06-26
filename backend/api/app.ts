@@ -69,19 +69,19 @@ app.use(passport.session());
 
 app.use(auth); // 2
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (req.isAuthenticated()) {
-      console.log("User is Authenticated");
-      return next();
-    }
-    res.json({ message: "User is not Authenticated" });
-  } catch (error) {
-    return next(error);
-  }
-});
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     if (req.isAuthenticated()) {
+//       console.log("User is Authenticated");
+//       return next();
+//     }
+//     res.json({ message: "User is not Authenticated" });
+//   } catch (error) {
+//     return next(error);
+//   }
+// });
 
-app.use(users); // 2
+app.use(users); // 1
 app.use(goals); // 2
 app.use(expenses); // 3
 app.use(financial_profiles); // 2

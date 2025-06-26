@@ -16,23 +16,23 @@ router.get("/user", async (req, res, next) => {
   }
 });
 
-router.put(
-  "/user",
-  verify_user,
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const payload = req.body as users;
-
-      const updated_user = await updateUser(payload);
-
-      res.status(200).json({
-        message: "Successfully updated user!",
-        data: updated_user,
-      });
-    } catch (error) {
-      return next({ status: 500, error: "Error updating user!" });
-    }
-  },
-);
+// router.put(
+//   "/user",
+//   verify_user,
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const payload = req.body as users;
+//
+//       const updated_user = await updateUser(payload);
+//
+//       res.status(200).json({
+//         message: "Successfully updated user!",
+//         data: updated_user,
+//       });
+//     } catch (error) {
+//       return next({ status: 500, error: "Error updating user!" });
+//     }
+//   },
+// );
 
 export default router;
