@@ -87,8 +87,8 @@ app.use(expenses);
 app.use(financial_profiles);
 app.use(budget_allocation);
 app.use(monthy_bonuses);
-app.use(monthy_snapshots);
 
+app.use(monthy_snapshots);
 //error handler probably not needed but keeps messages short and concise
 app.use(
   (err: custom_error, req: Request, res: Response, next: NextFunction) => {
