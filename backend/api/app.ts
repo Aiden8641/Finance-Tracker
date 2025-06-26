@@ -88,19 +88,19 @@ app.use(financial_profiles); // 2
 app.use(budget_allocation); // 1
 // app.use(monthy_bonuses);
 
-app.use(monthy_snapshots);
+// app.use(monthy_snapshots);
 //error handler probably not needed but keeps messages short and concise
-app.use(
-  (err: custom_error, req: Request, res: Response, next: NextFunction) => {
-    if (err.clear_cookie) {
-      res.clearCookie("connect.sid").status(err.status).json(err.error);
-    } else {
-      res.status(err.status).json(err.error);
-    }
-
-    return;
-  },
-);
+// app.use(
+//   (err: custom_error, req: Request, res: Response, next: NextFunction) => {
+//     if (err.clear_cookie) {
+//       res.clearCookie("connect.sid").status(err.status).json(err.error);
+//     } else {
+//       res.status(err.status).json(err.error);
+//     }
+//
+//     return;
+//   },
+// );
 
 app.listen(port, async () => {
   console.log(`Listening on port ${port}`);
