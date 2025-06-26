@@ -81,6 +81,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+app.get("/user", async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    res.json(user);
+  } catch (error) {
+    return next(error);
+  }
+});
+
 app.use(users); // 1
 app.use(goals); // 1
 app.use(expenses); // 2
