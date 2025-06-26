@@ -16,11 +16,11 @@ import goals from "./routes/goals";
 import expenses from "./routes/expenses";
 import budget_allocation from "./routes/budget_allocation";
 import financial_profiles from "./routes/financial_profiles";
-import monthy_bonuses from "./routes/monthly_bonuses";
-import monthy_snapshots from "./routes/monthy_snapshots";
-
-import { custom_error } from "./@types/types";
-import { createDemoUser } from "./createDemoUser";
+// import monthy_bonuses from "./routes/monthly_bonuses";
+// import monthy_snapshots from "./routes/monthy_snapshots";
+//
+// import { custom_error } from "./@types/types";
+// import { createDemoUser } from "./createDemoUser";
 
 configDotenv();
 
@@ -84,7 +84,7 @@ app.use(auth); // 2
 app.use(users); // 1
 app.use(goals); // 1
 app.use(expenses); // 2
-app.use(financial_profiles); // 2
+app.use(financial_profiles); // 1
 app.use(budget_allocation); // 1
 // app.use(monthy_bonuses);
 

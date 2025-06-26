@@ -28,36 +28,36 @@ router.get(
   },
 );
 
-router.put(
-  "/financial_profile",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      console.log(req.body);
-      const user = req.user;
-      const payload = req.body as financial_profiles;
-
-      const financial_profile = await update_financial_profiles(
-        user as Express.User,
-        payload,
-      );
-
-      if (!financial_profile) {
-        res.status(404).json({
-          message:
-            "Financial profile not updated. No financial profile with that id found for current user",
-        });
-        return;
-      }
-
-      res.status(200).json({
-        message: "Financial profile Successfully updated",
-        data: financial_profile,
-      });
-    } catch (error) {
-      console.log(error);
-      return next({ status: 500, error: "Error updating financial profile" });
-    }
-  },
-);
+// router.put(
+//   "/financial_profile",
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       console.log(req.body);
+//       const user = req.user;
+//       const payload = req.body as financial_profiles;
+//
+//       const financial_profile = await update_financial_profiles(
+//         user as Express.User,
+//         payload,
+//       );
+//
+//       if (!financial_profile) {
+//         res.status(404).json({
+//           message:
+//             "Financial profile not updated. No financial profile with that id found for current user",
+//         });
+//         return;
+//       }
+//
+//       res.status(200).json({
+//         message: "Financial profile Successfully updated",
+//         data: financial_profile,
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       return next({ status: 500, error: "Error updating financial profile" });
+//     }
+//   },
+// );
 
 export default router;
