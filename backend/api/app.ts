@@ -67,7 +67,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(auth);
+app.use(auth); // 2
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   try {
@@ -81,12 +81,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-app.use(users);
-app.use(goals);
-app.use(expenses);
-app.use(financial_profiles);
-app.use(budget_allocation);
-app.use(monthy_bonuses);
+app.use(users); // 2
+app.use(goals); // 2
+app.use(expenses); // 3
+app.use(financial_profiles); // 2
+app.use(budget_allocation); // 1
+// app.use(monthy_bonuses);
 
 app.use(monthy_snapshots);
 //error handler probably not needed but keeps messages short and concise

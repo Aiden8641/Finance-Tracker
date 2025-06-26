@@ -113,74 +113,74 @@ router.post("/logout", (req, res, next) => {
   });
 });
 
-router.post("/signUp", async (req, res, next) => {
-  try {
-    const user = req.body as {
-      email: string;
-      username: string;
-      password: string;
-    };
-
-    const is_identical_username = await get_user_by_username(user.username);
-
-    if (is_identical_username) {
-      res.status(409).json({
-        message: "Username already taken, please choose a different username!",
-      });
-      return;
-    }
-
-    const saltOrRounds = 10;
-
-    bcrypt.hash(user.password, saltOrRounds, async function (err, hash) {
-      if (err) {
-        return next({
-          status: 500,
-          error: "Something went wrong! Please try again later!",
-        });
-      }
-      try {
-        const added_user = await sql.begin(async (sql) => {
-          const [new_user]: [users] =
-            await sql`INSERT INTO users (email, username, hashed_password) 
-              VALUES (${user.email},${user.username}, ${hash}) RETURNING *; 
-            `;
-
-          const user_id = new_user.id;
-
-          await sql`INSERT INTO budget_allocations (user_id) VALUES (${user_id})`;
-          await sql`INSERT INTO Financial_profiles (user_id) VALUES (${user_id})`;
-
-          return new_user;
-        });
-
-        req.login(added_user, function (err) {
-          if (err) {
-            return next({
-              status: 500,
-              error:
-                "Error logging in user after creation. Please try manually logging in!",
-              message: err,
-            });
-          }
-          res.status(201).json("Successfully Signed Up and Logged in!");
-        });
-      } catch (error) {
-        console.log(error);
-
-        return next({
-          status: 500,
-          error: "Unable to create new user. Please try again later!",
-        });
-      }
-    });
-  } catch (error) {
-    console.log(error);
-    return next({
-      status: 500,
-      error: "Error while signing up. Please try again later!",
-    });
-  }
-});
-
+// router.post("/signUp", async (req, res, next) => {
+//   try {
+//     const user = req.body as {
+//       email: string;
+//       username: string;
+//       password: string;
+//     };
+//
+//     const is_identical_username = await get_user_by_username(user.username);
+//
+//     if (is_identical_username) {
+//       res.status(409).json({
+//         message: "Username already taken, please choose a different username!",
+//       });
+//       return;
+//     }
+//
+//     const saltOrRounds = 10;
+//
+//     bcrypt.hash(user.password, saltOrRounds, async function (err, hash) {
+//       if (err) {
+//         return next({
+//           status: 500,
+//           error: "Something went wrong! Please try again later!",
+//         });
+//       }
+//       try {
+//         const added_user = await sql.begin(async (sql) => {
+//           const [new_user]: [users] =
+//             await sql`INSERT INTO users (email, username, hashed_password)
+//               VALUES (${user.email},${user.username}, ${hash}) RETURNING *;
+//             `;
+//
+//           const user_id = new_user.id;
+//
+//           await sql`INSERT INTO budget_allocations (user_id) VALUES (${user_id})`;
+//           await sql`INSERT INTO Financial_profiles (user_id) VALUES (${user_id})`;
+//
+//           return new_user;
+//         });
+//
+//         req.login(added_user, function (err) {
+//           if (err) {
+//             return next({
+//               status: 500,
+//               error:
+//                 "Error logging in user after creation. Please try manually logging in!",
+//               message: err,
+//             });
+//           }
+//           res.status(201).json("Successfully Signed Up and Logged in!");
+//         });
+//       } catch (error) {
+//         console.log(error);
+//
+//         return next({
+//           status: 500,
+//           error: "Unable to create new user. Please try again later!",
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return next({
+//       status: 500,
+//       error: "Error while signing up. Please try again later!",
+//     });
+//   }
+// });
+//
 export default router;

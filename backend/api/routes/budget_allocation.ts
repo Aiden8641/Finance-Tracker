@@ -28,38 +28,38 @@ router.get(
   },
 );
 
-router.put(
-  "/budget_allocation",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user = req.user;
-      const payload = req.body as budget_allocations;
-
-      const budget_allocation = await update_budget_allocation(
-        user as Express.User,
-        payload,
-      );
-
-      if (!budget_allocation) {
-        res.status(404).json({
-          message:
-            "Budget allocation not updated. No budget allocation with that id found for current user",
-        });
-        return;
-      }
-
-      res.status(200).json({
-        message: "Budget allocation Succesfully retrieved",
-        data: budget_allocation,
-      });
-    } catch (error) {
-      console.log(error);
-      return next({
-        status: 500,
-        error: "Error updating users budget allocation",
-      });
-    }
-  },
-);
+// router.put(
+//   "/budget_allocation",
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const user = req.user;
+//       const payload = req.body as budget_allocations;
+//
+//       const budget_allocation = await update_budget_allocation(
+//         user as Express.User,
+//         payload,
+//       );
+//
+//       if (!budget_allocation) {
+//         res.status(404).json({
+//           message:
+//             "Budget allocation not updated. No budget allocation with that id found for current user",
+//         });
+//         return;
+//       }
+//
+//       res.status(200).json({
+//         message: "Budget allocation Succesfully retrieved",
+//         data: budget_allocation,
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       return next({
+//         status: 500,
+//         error: "Error updating users budget allocation",
+//       });
+//     }
+//   },
+// );
 
 export default router;
