@@ -67,6 +67,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/", (req, res) => {
+  res.send("express on vercel");
+});
+
 app.use(auth); // 2
 
 app.use((req: Request, res: Response, next: NextFunction) => {
