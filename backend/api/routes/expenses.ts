@@ -79,25 +79,25 @@ router.get("/expenses/category", async (req, res, next) => {
 //   },
 // );
 
-router.post("/expenses", async (req, res, next) => {
-  try {
-    const user = req.user;
-    const payload = req.body as expenses;
-
-    const expenses = await insert_expenses(user as Express.User, payload);
-
-    res.status(200).json({
-      message: "Succesfully added expense to current user!",
-      data: expenses,
-    });
-  } catch (error) {
-    console.log(error);
-    return next({
-      status: 500,
-      error: "Error inserting expense for current user!",
-    });
-  }
-});
+// router.post("/expenses", async (req, res, next) => {
+//   try {
+//     const user = req.user;
+//     const payload = req.body as expenses;
+//
+//     const expenses = await insert_expenses(user as Express.User, payload);
+//
+//     res.status(200).json({
+//       message: "Succesfully added expense to current user!",
+//       data: expenses,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return next({
+//       status: 500,
+//       error: "Error inserting expense for current user!",
+//     });
+//   }
+// });
 
 // router.put(
 //   "/expenses",

@@ -51,22 +51,22 @@ router.get(
 //     }
 //   },
 // );
-router.post(
-  "/goals",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user = req.user;
-      const payload = req.body as goals;
-      const goal = await insert_goals(user as Express.User, payload);
-
-      res
-        .status(200)
-        .json({ message: "Goal Successfully added to user", data: goal });
-    } catch (error) {
-      return next({ status: 500, error: "Error adding new goal to user" });
-    }
-  },
-);
+// router.post(
+//   "/goals",
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const user = req.user;
+//       const payload = req.body as goals;
+//       const goal = await insert_goals(user as Express.User, payload);
+//
+//       res
+//         .status(200)
+//         .json({ message: "Goal Successfully added to user", data: goal });
+//     } catch (error) {
+//       return next({ status: 500, error: "Error adding new goal to user" });
+//     }
+//   },
+// );
 // router.put(
 //   "/goals",
 //   async (req: Request, res: Response, next: NextFunction) => {

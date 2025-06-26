@@ -82,8 +82,8 @@ app.use(auth); // 2
 // });
 
 app.use(users); // 1
-app.use(goals); // 2
-app.use(expenses); // 3
+app.use(goals); // 1
+app.use(expenses); // 2
 app.use(financial_profiles); // 2
 app.use(budget_allocation); // 1
 // app.use(monthy_bonuses);
