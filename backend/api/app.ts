@@ -41,9 +41,9 @@ app.use(
 );
 
 const pgPool = new Pool({
-  host: "db.jftfhetgsyjefchfkcgv.supabase.co",
-  port: 5432,
-  user: "postgres",
+  host: "aws-0-us-east-2.pooler.supabase.com",
+  port: 6543,
+  user: "postgres.jftfhetgsyjefchfkcgv",
   password: "zix36RL90cIFLzLP",
   database: "postgres",
 });
