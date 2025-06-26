@@ -109,3 +109,5 @@ app.listen(port, async () => {
   // await setupDB();
   // await createDemoUser();
 });
+
+module.exports = app;
