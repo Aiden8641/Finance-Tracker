@@ -53,11 +53,11 @@ router.get(
 );
 router.post(
   "/goals",
-  is_authorized_user_by_payload(),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const user = req.user;
       const payload = req.body as goals;
-      const goal = await insert_goals(payload);
+      const goal = await insert_goals(user as Express.User, payload);
 
       res
         .status(200)

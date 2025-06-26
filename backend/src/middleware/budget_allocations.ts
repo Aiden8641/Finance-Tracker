@@ -8,7 +8,7 @@ export async function get_budget_allocation_by_id(
   const user_id = user.id;
 
   const [budget_allocation]: [budget_allocations] = await sql`
-    SELECT * from budgetAllocation
+    SELECT * from budget_allocations
     WHERE id = ${id} and user_id = ${user_id};
   `;
 
@@ -18,7 +18,7 @@ export async function get_budget_allocation_by_id(
 export async function get_budget_allocation_by_user_id(user: Express.User) {
   const user_id = user.id;
   const [budget_allocations]: [budget_allocations] = await sql`
-    SELECT * from budgetAllocation
+    SELECT * from budget_allocations
     WHERE user_id = ${user_id};
   `;
 
@@ -32,12 +32,12 @@ export async function update_budget_allocation(
   const user_id = user.id;
 
   const [budget_allocations]: [budget_allocations] = await sql`
-    UPDATE budgetAllocation
+    UPDATE budget_allocations
     SET
-      percent_need = ${new_budget_allocations.percent_need},
+      percent_needs = ${new_budget_allocations.percent_needs},
       percent_wants = ${new_budget_allocations.percent_wants},
       percent_savings = ${new_budget_allocations.percent_savings}
-    WHERE id = ${new_budget_allocations.id} and user_id = ${user_id}
+    WHERE user_id = ${user_id}
     RETURNING *;
   `;
 

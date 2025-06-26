@@ -22,10 +22,10 @@ export async function get_goals_by_id(user: Express.User, id: number | string) {
   return goals;
 }
 
-export async function insert_goals(goal: goals) {
+export async function insert_goals(user: Express.User, goal: goals) {
   const [new_goals]: [goals] = await sql`
     INSERT INTO goals (user_id, description)
-    VALUES (${goal.user_id}, ${goal.description})
+    VALUES (${user.id}, ${goal.description})
     RETURNING *;
   `;
 

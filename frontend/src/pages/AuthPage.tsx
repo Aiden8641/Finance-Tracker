@@ -2,41 +2,68 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "your_username",
-          password: "your_password",
-        }),
-        credentials: "include",
-      });
+    if (isLogin) {
+      try {
+        const response = await fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+          credentials: "include",
+        });
 
-      if (!response.ok) {
-        throw new Error("Login failed");
+        console.log(response);
+        if (!response.ok) {
+          throw new Error("Login failed");
+        }
+
+        // const data = await response.json();
+        // console.log("Login successful:", data);
+
+        navigate("/dashboard");
+
+        // ✅ Save token / update auth state
+      } catch (error) {
+        console.error("Login error:", error);
       }
+    } else {
+      try {
+        const response = await fetch("http://localhost:3000/signUp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username,
+            password: password,
+          }),
+          credentials: "include",
+        });
 
-      const data = await response.json();
-      console.log("Login successful:", data);
+        if (!response.ok) {
+          throw new Error("Login failed");
+        }
 
-      navigate("/dashboard");
-
-      // ✅ Save token / update auth state
-    } catch (error) {
-      console.error("Login error:", error);
+        navigate("/profile");
+      } catch (error) {
+        console.error("Sign in error:", error);
+      }
     }
   };
 
@@ -49,6 +76,14 @@ export default function AuthPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {!isLogin && (
+            <Input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          )}
           <Input
             type="text"
             placeholder="Username"
@@ -72,6 +107,18 @@ export default function AuthPage() {
           <Button className="w-full" onClick={handleLogin}>
             {isLogin ? "Login" : "Sign Up"}
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setUsername("demo_user");
+              setPassword("demo");
+              handleLogin();
+            }}
+            className="w-full"
+          >
+            Demo Login
+          </Button>
+
           <div className="text-center">
             <Button variant="link" onClick={() => setIsLogin(!isLogin)}>
               {isLogin

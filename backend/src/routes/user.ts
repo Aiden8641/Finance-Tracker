@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, NextFunction, Router } from "express";
 import { users } from "../@types/types";
 import { updateUser } from "../middleware/user";
 import { verify_user } from "../middleware/verification";
+import { sql } from "../postgreSQL/db";
 
 const router = Router();
 
@@ -33,4 +34,5 @@ router.put(
     }
   },
 );
+
 export default router;

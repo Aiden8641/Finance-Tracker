@@ -17,8 +17,10 @@ import expenses from "./routes/expenses";
 import budget_allocation from "./routes/budget_allocation";
 import financial_profiles from "./routes/financial_profiles";
 import monthy_bonuses from "./routes/monthly_bonuses";
+import monthy_snapshots from "./routes/monthy_snapshots";
 
 import { custom_error } from "./@types/types";
+import { createDemoUser } from "./createDemoUser";
 
 configDotenv();
 
@@ -32,6 +34,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
+    origin: "http://localhost:5173/",
     methods: ["GET", "POST", "PUT", "UPDATE", "DELETE"],
     credentials: true,
   }),
@@ -84,6 +87,7 @@ app.use(expenses);
 app.use(financial_profiles);
 app.use(budget_allocation);
 app.use(monthy_bonuses);
+app.use(monthy_snapshots);
 
 //error handler probably not needed but keeps messages short and concise
 app.use(
@@ -102,5 +106,6 @@ app.listen(port, async () => {
   console.log(`Listening on port ${port}`);
   await checkDBConnection();
   // await dropTables();
-  await setupDB();
+  // await setupDB();
+  // await createDemoUser();
 });

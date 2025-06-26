@@ -32,6 +32,7 @@ router.put(
   "/financial_profile",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log(req.body);
       const user = req.user;
       const payload = req.body as financial_profiles;
 

@@ -69,7 +69,7 @@ export async function expenses(): Promise<void> {
   await sql`
     CREATE TABLE IF NOT EXISTS expenses (
       id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-      user_id INTEGER UNIQUE REFERENCES users (id) ON DELETE CASCADE,
+      user_id INTEGER REFERENCES users (id) ON DELETE CASCADE,
       category_id INTEGER REFERENCES categories (id),
       description TEXT NOT NULL,
       expense_amount NUMERIC NOT NULL,

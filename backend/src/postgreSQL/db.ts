@@ -11,6 +11,8 @@ import {
   goals,
 } from "./tables";
 import { types } from "pg";
+import { populateSnapshotsForUser } from "../middleware/monthy_snapshots";
+import { createDemoUser } from "../createDemoUser";
 
 configDotenv();
 

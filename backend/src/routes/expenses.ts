@@ -5,6 +5,7 @@ import {
   insert_expenses,
   update_expenses,
   delete_expenses,
+  get_expenses_by_category,
 } from "../middleware/expenses";
 import { is_authorized_user_by_payload } from "../middleware/verification";
 import { expenses } from "../@types/types";
@@ -31,6 +32,25 @@ router.get(
     }
   },
 );
+
+router.get("/expenses/category", async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const expense = await get_expenses_by_category(user as Express.User);
+
+    res.status(200).json({
+      message: "Succesfully retrieved expenses by categories",
+      data: expense,
+    });
+  } catch (error) {
+    console.log(error);
+    return next({
+      status: 500,
+      error: "Error getting expense by categories for current user!",
+    });
+  }
+});
 
 router.get(
   "/expenses/:id",
@@ -59,28 +79,25 @@ router.get(
   },
 );
 
-router.post(
-  "/expenses",
-  is_authorized_user_by_payload(),
-  async (req, res, next) => {
-    try {
-      const payload = req.body as expenses;
+router.post("/expenses", async (req, res, next) => {
+  try {
+    const user = req.user;
+    const payload = req.body as expenses;
 
-      const expenses = await insert_expenses(payload);
+    const expenses = await insert_expenses(user as Express.User, payload);
 
-      res.status(200).json({
-        message: "Succesfully added expense to current user!",
-        data: expenses,
-      });
-    } catch (error) {
-      console.log(error);
-      return next({
-        status: 500,
-        error: "Error inserting expense for current user!",
-      });
-    }
-  },
-);
+    res.status(200).json({
+      message: "Succesfully added expense to current user!",
+      data: expenses,
+    });
+  } catch (error) {
+    console.log(error);
+    return next({
+      status: 500,
+      error: "Error inserting expense for current user!",
+    });
+  }
+});
 
 router.put(
   "/expenses",

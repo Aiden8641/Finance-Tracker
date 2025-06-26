@@ -23,7 +23,7 @@ export async function update_financial_profiles(
     SET 
       income = ${financial_profile.income},
       dividends_and_other_income = ${financial_profile.dividend_and_other_income}
-    WHERE id = ${financial_profile.id} and user_id = ${user_id}
+    WHERE user_id = ${user_id}
     RETURNING *;
   `;
 

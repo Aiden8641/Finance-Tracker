@@ -47,7 +47,7 @@ interface monthly_bonuses {
 interface budget_allocations {
   id: number;
   user_id: number;
-  percent_need: number;
+  percent_needs: number;
   percent_wants: number;
   percent_savings: number;
 }

@@ -102,6 +102,10 @@ router.post("/logout", (req, res, next) => {
       return next({ status: 500, error: err });
     }
     // res.redirect("/");
+    req.session.destroy((err) => {
+      console.log(err);
+    });
+
     res
       .clearCookie("connect.sid")
       .status(200)
