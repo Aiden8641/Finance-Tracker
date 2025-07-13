@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173/",
+    // origin: "http://localhost:5173/",
     methods: ["GET", "POST", "PUT", "UPDATE", "DELETE"],
     credentials: true,
   }),
@@ -118,7 +118,7 @@ app.use(budget_allocation); // 1
 
 app.listen(port, async () => {
   console.log(`Listening on port ${port}`);
-  await checkDBConnection();
+  // await checkDBConnection();
   // await dropTables();
   // await setupDB();
   // await createDemoUser();
